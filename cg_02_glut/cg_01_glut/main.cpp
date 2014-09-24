@@ -23,7 +23,7 @@ private:
 	GLuint              VAO;
     
 public:
-	void init() {
+	Triangle() {
         shaders.push_back(createShader(GL_VERTEX_SHADER,   "simple_vs"));
         shaders.push_back(createShader(GL_FRAGMENT_SHADER, "simple_fs"));
         
@@ -41,11 +41,11 @@ public:
         glBindVertexArray(0);
 	}
     
-	void dispose() const {
+	~Triangle() {
         glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
         
-		for(size_t i = 0; i < shaders.size(); i++)
+		for (size_t i = 0; i < shaders.size(); i++)
 			glDeleteShader(shaders[i]);
         
 		glDeleteProgram(material);
@@ -70,7 +70,7 @@ private:
 	GLuint createShader(GLenum type, std::string filename) const {
         filename += ".glsl";
         std::ifstream file(filename);
-        if(!file.is_open()) {
+        if (!file.is_open()) {
             std::cout << "Unable to open file " << filename << std::endl;
             exit(1);
         }
@@ -78,8 +78,8 @@ private:
         fileData << file.rdbuf();
         file.close();
         
-        const GLchar*  content       = fileData.str().c_str();
-        GLint          contentLength = (GLint)strlen(content);
+        const GLchar* content       = fileData.str().c_str();
+        GLint         contentLength = (GLint)strlen(content);
         
 		int result = glCreateShader(type);
         
@@ -93,7 +93,7 @@ private:
 	GLuint createProgram(const std::vector<GLuint>& shaders) const {
 		GLuint result = glCreateProgram();
         
-		for(size_t i = 0; i < shaders.size(); i++)
+		for (size_t i = 0; i < shaders.size(); i++)
 			glAttachShader(result, shaders[i]);
         
 		glLinkProgram(result);
@@ -106,9 +106,9 @@ private:
 	void checkStatus(GLuint object, GLenum status) const {
 		GLint params;
         
-		if(status == GL_COMPILE_STATUS)
+		if (status == GL_COMPILE_STATUS)
 			glGetShaderiv(object, status, &params);
-		else if(status == GL_LINK_STATUS)
+		else if (status == GL_LINK_STATUS)
 			glGetProgramiv(object, status, &params);
         
 		if (params != 1) {
@@ -126,19 +126,19 @@ private:
 	}
 };
 
-static Triangle triangle;
+static Triangle* triangle = nullptr;
 
 void handleKeypress(unsigned char key, int x, int y) {
-    triangle.dispose();
+    delete triangle;
     exit(0);
 }
 
 void handleResize(int w, int h) {
-    triangle.reshape(0, 0, w, h);
+    triangle->reshape(0, 0, w, h);
 }
 
 void handleDraw() {
-    triangle.display();
+    triangle->display();
     glutSwapBuffers();
 }
 
@@ -152,7 +152,7 @@ int main(int argc, char** argv) {
     glutKeyboardFunc(handleKeypress);
     glutReshapeFunc(handleResize);
     
-    triangle.init();
+    triangle = new Triangle();
     
     glutMainLoop();
     return 0;

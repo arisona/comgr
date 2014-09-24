@@ -12,18 +12,18 @@ import java.util.Random;
 
 import javax.swing.Timer;
 
-public class Bresenham extends WindowAdapter {	
+public class Bresenham extends WindowAdapter {
 	static class FrameBuffer extends Canvas {
 		private static final long serialVersionUID = -4862025317626407760L;
-		int           w;
-		int           h;
+		int w;
+		int h;
 		BufferedImage buffer;
-		
+
 		@Override
 		public void update(Graphics g) {
-			if(getWidth() != w || getHeight() != h) {
-				w      = getWidth();
-				h      = getHeight();
+			if (getWidth() != w || getHeight() != h) {
+				w = getWidth();
+				h = getHeight();
 				buffer = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
 			}
 			display();
@@ -31,19 +31,20 @@ public class Bresenham extends WindowAdapter {
 		}
 
 		private int ix(float x) {
-			return (int)((x + 1f) * w * 0.5f);
+			return (int) ((x + 1f) * w * 0.5f);
 		}
-		
+
 		private int iy(float y) {
-			return (int)((-y + 1f) * h * 0.5f);
+			return (int) ((-y + 1f) * h * 0.5f);
 		}
-		
+
 		public void drawPixel(float x, float y, int rgb) {
 			drawPixel(ix(x), iy(y), rgb);
 		}
 
 		private void drawPixel(int x, int y, int rgb) {
-			if(x < 0 || x >= w || y < 0 || y >= h) return;
+			if (x < 0 || x >= w || y < 0 || y >= h)
+				return;
 			buffer.setRGB(x, y, rgb);
 		}
 
@@ -52,16 +53,16 @@ public class Bresenham extends WindowAdapter {
 		}
 
 		public void drawLine1(float x0, float y0, float x1, float y1, int rgb) {
-			int   n  = ix(x1) - ix(x0); 
-		    float dx = 2f / this.w;
-		    float dy = (y1 - y0) / n;
-		    for(int i = 0; i <= n; i++) {
-		        drawPixel(x0, y0, rgb) ;
-		        y0 += dy;
-		        x0 += dx;
-		    }
+			int n = ix(x1) - ix(x0);
+			float dx = 2f / this.w;
+			float dy = (y1 - y0) / n;
+			for (int i = 0; i <= n; i++) {
+				drawPixel(x0, y0, rgb);
+				y0 += dy;
+				x0 += dx;
+			}
 		}
-		
+
 		public void drawLine(float x0, float y0, float x1, float y1, int rgb) {
 			float fw = x1 - x0;
 			float fh = y1 - y0;
@@ -73,9 +74,10 @@ public class Bresenham extends WindowAdapter {
 
 			int l = (int) (Math.abs(fw) * w * 0.5);
 			int s = (int) (Math.abs(fh) * h * 0.5);
-			if(s > l) {
+			if (s > l) {
 				int t = l;
-				l = s; s = t;
+				l = s;
+				s = t;
 				dy1 = sign(fh);
 				dx1 = 0;
 			}
@@ -83,10 +85,10 @@ public class Bresenham extends WindowAdapter {
 			int ix0 = ix(x0);
 			int iy0 = iy(y0);
 
-			int num = l >> 1 ;
-			for(int i = 0; i <= l; i++) {
-				drawPixel(ix0, iy0, rgb) ;
-				num += s ;
+			int num = l >> 1;
+			for (int i = 0; i <= l; i++) {
+				drawPixel(ix0, iy0, rgb);
+				num += s;
 				if (num >= l) {
 					num -= l;
 					ix0 += dx0;
@@ -99,17 +101,19 @@ public class Bresenham extends WindowAdapter {
 		}
 
 		private Random r = new Random();
+
 		void display() {
 			int N = 100;
-			for(int i = 0; i < N; i++) {
+			for (int i = 0; i < N; i++) {
 				double a = i * 2.0 * Math.PI / N;
-				drawLine1(0f, 0f, (float)Math.sin(a), (float)Math.cos(a), r.nextInt(0xFFFFFF));
+				drawLine1(0f, 0f, (float) Math.sin(a), (float) Math.cos(a),
+						r.nextInt(0xFFFFFF));
 			}
 		}
 	}
 
 	public static void main(String[] args) {
-		Frame             f  = new Frame("Brseneham");
+		Frame f = new Frame("Brseneham");
 		final FrameBuffer fb = new FrameBuffer();
 		f.add(fb);
 		f.setSize(800, 800);
