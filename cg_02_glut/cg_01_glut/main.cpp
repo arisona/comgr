@@ -18,7 +18,7 @@ static const GLfloat TRIANGLE[] = {
 class Triangle {
 private:
     std::vector<GLuint> shaders;
-	GLuint              material;
+	GLuint              program;
 	GLuint              VBO;
 	GLuint              VAO;
     
@@ -27,7 +27,7 @@ public:
         shaders.push_back(createShader(GL_VERTEX_SHADER,   "simple_vs"));
         shaders.push_back(createShader(GL_FRAGMENT_SHADER, "simple_fs"));
         
-        material = createProgram(shaders);
+        program = createProgram(shaders);
 
         glGenVertexArrays(1, &VAO);
         glBindVertexArray(VAO);
@@ -45,17 +45,17 @@ public:
         glDeleteVertexArrays(1, &VAO);
 		glDeleteBuffers(1, &VBO);
         
-		for (size_t i = 0; i < shaders.size(); i++)
-			glDeleteShader(shaders[i]);
+        for (auto shader : shaders)
+			glDeleteShader(shader);
         
-		glDeleteProgram(material);
+		glDeleteProgram(program);
 	}
     
 	void display() const {
         glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-        glUseProgram(material);
+        glUseProgram(program);
         glBindVertexArray(VAO);
 		glDrawArrays(GL_TRIANGLES, 0, 3);
         glBindVertexArray(0);
@@ -93,8 +93,8 @@ private:
 	GLuint createProgram(const std::vector<GLuint>& shaders) const {
 		GLuint result = glCreateProgram();
         
-		for (size_t i = 0; i < shaders.size(); i++)
-			glAttachShader(result, shaders[i]);
+        for (auto shader : shaders)
+			glAttachShader(result, shader);
         
 		glLinkProgram(result);
 		checkStatus(result, GL_LINK_STATUS);

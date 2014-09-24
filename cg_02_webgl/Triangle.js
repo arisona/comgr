@@ -5,7 +5,7 @@ var TRIANGLE = [
                 ];
 var VBO;
 var shaders = [];
-var material;
+var program;
 
 function init() {
 	var canvas = document.getElementById('glcanvas');
@@ -14,7 +14,7 @@ function init() {
 	
 	shaders.push(createShader(gl, gl.VERTEX_SHADER,   "simple_vs"));
 	shaders.push(createShader(gl, gl.FRAGMENT_SHADER, "simple_fs"));
-	material = createProgram(gl, shaders);
+	program = createProgram(gl, shaders);
 
 	VBO = gl.createBuffer();
 	gl.bindBuffer(gl.ARRAY_BUFFER, VBO);
@@ -28,7 +28,7 @@ function display(gl) {
 	gl.clearColor(0.0, 0.0, 0.0, 1.0);
 	gl.clear(gl.COLOR_BUFFER_BIT);
 
-	gl.useProgram(material);
+	gl.useProgram(program);
 
 	gl.enableVertexAttribArray(0);
 	gl.bindBuffer(gl.ARRAY_BUFFER, VBO);

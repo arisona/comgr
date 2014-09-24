@@ -5,7 +5,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
-import java.util.BitSet;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.media.opengl.GL3;
 import javax.media.opengl.GLAutoDrawable;
@@ -19,8 +20,8 @@ import com.jogamp.opengl.util.GLBuffers;
 public class Ring extends GLCanvas implements GLEventListener {
 	private static final long serialVersionUID = -8933329638658421749L;
 
-	private BitSet shaders = new BitSet();
-	private int material;
+	private List<Integer> shaders = new ArrayList<>();
+	private int program;
 	private final int[] VBO = new int[1];
 	private final int[] VAO = new int[1];
 	private static final int N = 40;
@@ -51,9 +52,9 @@ public class Ring extends GLCanvas implements GLEventListener {
 		final GL3 gl3 = glad.getGL().getGL3();
 
 		try {
-			shaders.set(createShader(gl3, GL3.GL_VERTEX_SHADER, "simple_vs"));
-			shaders.set(createShader(gl3, GL3.GL_FRAGMENT_SHADER, "simple_fs"));
-			material = createProgram(gl3, shaders);
+			shaders.add(createShader(gl3, GL3.GL_VERTEX_SHADER, "simple_vs"));
+			shaders.add(createShader(gl3, GL3.GL_FRAGMENT_SHADER, "simple_fs"));
+			program = createProgram(gl3, shaders);
 
 			gl3.glGenVertexArrays(1, VAO, 0);
 			gl3.glBindVertexArray(VAO[0]);
@@ -93,11 +94,10 @@ public class Ring extends GLCanvas implements GLEventListener {
 
 		gl3.glDeleteBuffers(1, VBO, 0);
 
-		for (int shader = shaders.nextSetBit(0); shader >= 0; shader = shaders
-				.nextSetBit(shader + 1))
+		for (int shader : shaders)
 			gl3.glDeleteShader(shader);
 
-		gl3.glDeleteProgram(material);
+		gl3.glDeleteProgram(program);
 	}
 
 	@Override
@@ -107,7 +107,7 @@ public class Ring extends GLCanvas implements GLEventListener {
 		gl3.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		gl3.glClear(GL3.GL_COLOR_BUFFER_BIT);
 
-		gl3.glUseProgram(material);
+		gl3.glUseProgram(program);
 		gl3.glBindVertexArray(VAO[0]);
 		gl3.glDrawArrays(GL3.GL_TRIANGLES, 0, N * 6);
 		gl3.glBindVertexArray(0);
@@ -119,7 +119,7 @@ public class Ring extends GLCanvas implements GLEventListener {
 		glad.getGL().getGL3().glViewport(x, y, w, h);
 	}
 
-	private final int createShader(GL3 gl3, int type, String filename)
+	private int createShader(GL3 gl3, int type, String filename)
 			throws IOException {
 		BufferedReader in = new BufferedReader(new InputStreamReader(getClass()
 				.getResourceAsStream(filename + ".glsl")));
@@ -139,11 +139,10 @@ public class Ring extends GLCanvas implements GLEventListener {
 		return result;
 	}
 
-	private final int createProgram(GL3 gl3, BitSet shaders) {
+	private int createProgram(GL3 gl3, List<Integer> shaders) {
 		int result = gl3.glCreateProgram();
 
-		for (int shader = shaders.nextSetBit(0); shader >= 0; shader = shaders
-				.nextSetBit(shader + 1))
+		for (int shader : shaders)
 			gl3.glAttachShader(result, shader);
 
 		gl3.glLinkProgram(result);
