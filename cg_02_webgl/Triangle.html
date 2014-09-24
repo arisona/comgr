@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+<title>CG 01 - Triangle</title>
+<script type="x-shader/x-fragment" id="simple_fs">
+
+void main() {
+   gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0);
+}
+
+</script>
+<script type="x-shader/x-fragment" id="simple_vs">
+
+attribute vec2 position;
+
+void main(){
+    gl_Position = vec4(position.x, position.y, 0.0, 1.0);
+}
+
+</script>
+<script src="Triangle.js"></script>
+<body onload="init()">
+  <canvas id="glcanvas" width="640" height="480">
+    Your browser doesn't appear to support the HTML5 <code>&lt;canvas&gt;</code> element.
+  </canvas>
+</body>
+</html>
