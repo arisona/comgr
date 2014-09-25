@@ -1,9 +1,6 @@
 package ch.fhnw.i4ds.cg;
 
 import java.awt.Frame;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -52,9 +49,9 @@ public class Ring extends GLCanvas implements GLEventListener {
 		final GL3 gl3 = glad.getGL().getGL3();
 
 		try {
-			shaders.add(createShader(gl3, GL3.GL_VERTEX_SHADER, "simple_vs"));
-			shaders.add(createShader(gl3, GL3.GL_FRAGMENT_SHADER, "simple_fs"));
-			program = createProgram(gl3, shaders);
+			shaders.add(GLSLHelpers.createShader(gl3, getClass(), GL3.GL_VERTEX_SHADER, "simple_vs"));
+			shaders.add(GLSLHelpers.createShader(gl3, getClass(), GL3.GL_FRAGMENT_SHADER, "simple_fs"));
+			program = GLSLHelpers.createProgram(gl3, shaders);
 
 			gl3.glGenVertexArrays(1, VAO, 0);
 			gl3.glBindVertexArray(VAO[0]);
@@ -117,60 +114,5 @@ public class Ring extends GLCanvas implements GLEventListener {
 	@Override
 	public void reshape(GLAutoDrawable glad, int x, int y, int w, int h) {
 		glad.getGL().getGL3().glViewport(x, y, w, h);
-	}
-
-	private int createShader(GL3 gl3, int type, String filename)
-			throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(getClass()
-				.getResourceAsStream(filename + ".glsl")));
-		String content = "";
-		String line;
-		while ((line = in.readLine()) != null)
-			content += line + "\n";
-		in.close();
-
-		int result = gl3.glCreateShader(type);
-
-		gl3.glShaderSource(result, 1, new String[] { content },
-				new int[] { content.length() }, 0);
-		gl3.glCompileShader(result);
-
-		checkStatus(gl3, result, GL3.GL_COMPILE_STATUS);
-		return result;
-	}
-
-	private int createProgram(GL3 gl3, List<Integer> shaders) {
-		int result = gl3.glCreateProgram();
-
-		for (int shader : shaders)
-			gl3.glAttachShader(result, shader);
-
-		gl3.glLinkProgram(result);
-		checkStatus(gl3, result, GL3.GL_LINK_STATUS);
-		gl3.glValidateProgram(result);
-
-		return result;
-	}
-
-	private void checkStatus(GL3 gl3, int object, int status) {
-		int[] params = { 0 };
-
-		if (status == GL3.GL_COMPILE_STATUS)
-			gl3.glGetShaderiv(object, status, params, 0);
-		else if (status == GL3.GL_LINK_STATUS)
-			gl3.glGetProgramiv(object, status, params, 0);
-
-		if (params[0] != 1) {
-			System.err.println("status: " + params[0]);
-			gl3.glGetShaderiv(object, GL3.GL_INFO_LOG_LENGTH, params, 0);
-			byte[] infoLog = new byte[params[0]];
-			if (status == GL3.GL_COMPILE_STATUS)
-				gl3.glGetShaderInfoLog(object, params[0], params, 0, infoLog, 0);
-			else if (status == GL3.GL_LINK_STATUS)
-				gl3.glGetProgramInfoLog(object, params[0], params, 0, infoLog,
-						0);
-			System.err.println(new String(infoLog));
-			System.exit(-1);
-		}
 	}
 }
