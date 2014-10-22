@@ -14,7 +14,7 @@ import javax.media.opengl.awt.GLCanvas;
 
 import com.jogamp.opengl.util.GLBuffers;
 
-public class Ring extends GLCanvas implements GLEventListener {
+public class RingWithAspectRatio extends GLCanvas implements GLEventListener {
 	private static final long serialVersionUID = -8933329638658421749L;
 
 	private static final int N = 40;
@@ -25,16 +25,19 @@ public class Ring extends GLCanvas implements GLEventListener {
 	private final List<Integer> shaders = new ArrayList<>();
 	private final int[] VBO = new int[1];
 	private final int[] VAO = new int[1];
+	
+	private int location;
+	private float aspect = 1;
 
 	public static void main(String[] args) {
-		Ring triangle = new Ring();
+		RingWithAspectRatio triangle = new RingWithAspectRatio();
 		Frame frame = new Frame("CG_01 Ring");
 		frame.add(triangle);
 		frame.setSize(triangle.getWidth(), triangle.getHeight());
 		frame.setVisible(true);
 	}
 
-	public Ring() {
+	public RingWithAspectRatio() {
 		super(new GLCapabilities(GLProfile.get("GL3")));
 		setSize(800, 800);
 		addGLEventListener(this);
@@ -50,10 +53,12 @@ public class Ring extends GLCanvas implements GLEventListener {
 		final GL3 gl3 = glad.getGL().getGL3();
 
 		try {
-			shaders.add(GLSLHelpers.createShader(gl3, getClass(), GL3.GL_VERTEX_SHADER, "simple_vs"));
-			shaders.add(GLSLHelpers.createShader(gl3, getClass(), GL3.GL_FRAGMENT_SHADER, "simple_fs"));
+			shaders.add(GLSLHelpers.createShader(gl3, getClass(), GL3.GL_VERTEX_SHADER, "simple_aspect_vs"));
+			shaders.add(GLSLHelpers.createShader(gl3, getClass(), GL3.GL_FRAGMENT_SHADER, "simple_aspect_fs"));
 			program = GLSLHelpers.createProgram(gl3, shaders);
 
+			location = gl3.glGetUniformLocation(program, "aspect");
+			
 			gl3.glGenVertexArrays(1, VAO, 0);
 			gl3.glBindVertexArray(VAO[0]);
 
@@ -106,14 +111,21 @@ public class Ring extends GLCanvas implements GLEventListener {
 		gl3.glClear(GL3.GL_COLOR_BUFFER_BIT);
 
 		gl3.glUseProgram(program);
+		
+		gl3.glUniform1f(location, aspect);
+		
 		gl3.glBindVertexArray(VAO[0]);
 		gl3.glDrawArrays(GL3.GL_TRIANGLES, 0, N * 6);
 		gl3.glBindVertexArray(0);
+		
+		
+		
 		gl3.glUseProgram(0);
 	}
 
 	@Override
 	public void reshape(GLAutoDrawable glad, int x, int y, int w, int h) {
 		glad.getGL().getGL3().glViewport(x, y, w, h);
+		aspect = (float)w / (float)h;
 	}
 }
