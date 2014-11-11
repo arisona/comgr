@@ -1,4 +1,4 @@
-package ch.fhnw.i4ds.cg;
+package ch.fhnw.i4ds.comgr;
 
 import java.io.BufferedReader;
 import java.io.IOException;
