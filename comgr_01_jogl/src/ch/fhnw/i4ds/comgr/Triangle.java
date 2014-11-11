@@ -26,7 +26,7 @@ public class Triangle extends GLCanvas implements GLEventListener {
 
 	public static void main(String[] args) {
 		Triangle triangle = new Triangle();
-		Frame frame = new Frame("CG_01 Triangle");
+		Frame frame = new Frame("Comgr Triangle");
 		frame.add(triangle);
 		frame.setSize(triangle.getWidth(), triangle.getHeight());
 		frame.setVisible(true);
@@ -53,8 +53,7 @@ public class Triangle extends GLCanvas implements GLEventListener {
 			gl3.glGenBuffers(1, VBO, 0);
 			gl3.glBindBuffer(GL3.GL_ARRAY_BUFFER, VBO[0]);
 			FloatBuffer buffer = GLBuffers.newDirectFloatBuffer(TRIANGLE);
-			gl3.glBufferData(GL3.GL_ARRAY_BUFFER, buffer.capacity() * 4,
-					buffer, GL3.GL_STATIC_DRAW);
+			gl3.glBufferData(GL3.GL_ARRAY_BUFFER, buffer.capacity() * 4, buffer, GL3.GL_STATIC_DRAW);
 			gl3.glEnableVertexAttribArray(0);
 			gl3.glVertexAttribPointer(0, 2, GL3.GL_FLOAT, false, 0, 0);
 

@@ -28,7 +28,7 @@ public class Ring extends GLCanvas implements GLEventListener {
 
 	public static void main(String[] args) {
 		Ring triangle = new Ring();
-		Frame frame = new Frame("CG_01 Ring");
+		Frame frame = new Frame("Comgr Ring");
 		frame.add(triangle);
 		frame.setSize(triangle.getWidth(), triangle.getHeight());
 		frame.setVisible(true);
@@ -40,20 +40,13 @@ public class Ring extends GLCanvas implements GLEventListener {
 		addGLEventListener(this);
 	}
 
-	private static void add(FloatBuffer buffer, double r, double a) {
-		buffer.put((float) (r * Math.sin(a)));
-		buffer.put((float) (r * Math.cos(a)));
-	}
-
 	@Override
 	public void init(GLAutoDrawable glad) {
 		GL3 gl3 = glad.getGL().getGL3();
 
 		try {
-			shaders.add(GLSLHelpers.createShader(gl3, getClass(),
-					GL3.GL_VERTEX_SHADER, "glsl/simple_vs"));
-			shaders.add(GLSLHelpers.createShader(gl3, getClass(),
-					GL3.GL_FRAGMENT_SHADER, "glsl/simple_fs"));
+			shaders.add(GLSLHelpers.createShader(gl3, getClass(), GL3.GL_VERTEX_SHADER, "glsl/simple_vs"));
+			shaders.add(GLSLHelpers.createShader(gl3, getClass(), GL3.GL_FRAGMENT_SHADER, "glsl/simple_fs"));
 			program = GLSLHelpers.createProgram(gl3, shaders);
 
 			gl3.glGenVertexArrays(1, VAO, 0);
@@ -75,10 +68,9 @@ public class Ring extends GLCanvas implements GLEventListener {
 				add(buffer, R1, b);
 				add(buffer, R1, a);
 			}
-			buffer.clear();
+			buffer.rewind();
 
-			gl3.glBufferData(GL3.GL_ARRAY_BUFFER, buffer.capacity() * 4,
-					buffer, GL3.GL_STATIC_DRAW);
+			gl3.glBufferData(GL3.GL_ARRAY_BUFFER, buffer.capacity() * 4, buffer, GL3.GL_STATIC_DRAW);
 			gl3.glEnableVertexAttribArray(0);
 			gl3.glVertexAttribPointer(0, 2, GL3.GL_FLOAT, false, 0, 0);
 
@@ -120,4 +112,9 @@ public class Ring extends GLCanvas implements GLEventListener {
 	public void reshape(GLAutoDrawable glad, int x, int y, int w, int h) {
 		glad.getGL().getGL3().glViewport(x, y, w, h);
 	}
+	
+	private static void add(FloatBuffer buffer, double r, double a) {
+		buffer.put((float) (r * Math.sin(a)));
+		buffer.put((float) (r * Math.cos(a)));
+	}	
 }

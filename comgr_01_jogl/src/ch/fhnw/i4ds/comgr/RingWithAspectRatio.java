@@ -31,7 +31,7 @@ public class RingWithAspectRatio extends GLCanvas implements GLEventListener {
 
 	public static void main(String[] args) {
 		RingWithAspectRatio triangle = new RingWithAspectRatio();
-		Frame frame = new Frame("CG_01 Ring");
+		Frame frame = new Frame("Comgr Ring with Aspect Ratio");
 		frame.add(triangle);
 		frame.setSize(triangle.getWidth(), triangle.getHeight());
 		frame.setVisible(true);
@@ -41,11 +41,6 @@ public class RingWithAspectRatio extends GLCanvas implements GLEventListener {
 		super(new GLCapabilities(GLProfile.get("GL3")));
 		setSize(800, 800);
 		addGLEventListener(this);
-	}
-
-	private static void add(FloatBuffer buffer, double r, double a) {
-		buffer.put((float) (r * Math.sin(a)));
-		buffer.put((float) (r * Math.cos(a)));
 	}
 
 	@Override
@@ -78,10 +73,9 @@ public class RingWithAspectRatio extends GLCanvas implements GLEventListener {
 				add(buffer, R1, b);
 				add(buffer, R1, a);
 			}
-			buffer.clear();
+			buffer.rewind();
 
-			gl3.glBufferData(GL3.GL_ARRAY_BUFFER, buffer.capacity() * 4,
-					buffer, GL3.GL_STATIC_DRAW);
+			gl3.glBufferData(GL3.GL_ARRAY_BUFFER, buffer.capacity() * 4, buffer, GL3.GL_STATIC_DRAW);
 			gl3.glEnableVertexAttribArray(0);
 			gl3.glVertexAttribPointer(0, 2, GL3.GL_FLOAT, false, 0, 0);
 
@@ -125,5 +119,10 @@ public class RingWithAspectRatio extends GLCanvas implements GLEventListener {
 	public void reshape(GLAutoDrawable glad, int x, int y, int w, int h) {
 		glad.getGL().getGL3().glViewport(x, y, w, h);
 		aspect = (float)w / (float)h;
+	}
+	
+	private static void add(FloatBuffer buffer, double r, double a) {
+		buffer.put((float) (r * Math.sin(a)));
+		buffer.put((float) (r * Math.cos(a)));
 	}
 }
