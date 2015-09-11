@@ -5,13 +5,12 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.media.opengl.GL3;
-import javax.media.opengl.GLAutoDrawable;
-import javax.media.opengl.GLCapabilities;
-import javax.media.opengl.GLEventListener;
-import javax.media.opengl.GLProfile;
-import javax.media.opengl.awt.GLCanvas;
-
+import com.jogamp.opengl.GL3;
+import com.jogamp.opengl.GLAutoDrawable;
+import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLEventListener;
+import com.jogamp.opengl.GLProfile;
+import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.GLBuffers;
 
 public class Ring extends GLCanvas implements GLEventListener {
@@ -112,9 +111,9 @@ public class Ring extends GLCanvas implements GLEventListener {
 	public void reshape(GLAutoDrawable glad, int x, int y, int w, int h) {
 		glad.getGL().getGL3().glViewport(x, y, w, h);
 	}
-	
+
 	private static void add(FloatBuffer buffer, double r, double a) {
 		buffer.put((float) (r * Math.sin(a)));
 		buffer.put((float) (r * Math.cos(a)));
-	}	
+	}
 }

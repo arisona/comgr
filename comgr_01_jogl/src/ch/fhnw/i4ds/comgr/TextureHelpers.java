@@ -18,12 +18,17 @@ import java.nio.ByteOrder;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
-import javax.media.opengl.GL;
+
+import com.jogamp.opengl.GL;
 
 public final class TextureHelpers {
 	public static class TextureBuffer {
-		private static final ColorModel GL_SRGBA_MODEL = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8, 8, 8 }, true, false, ComponentColorModel.TRANSLUCENT, DataBuffer.TYPE_BYTE);
-		private static final ColorModel GL_SRGB_MODEL = new ComponentColorModel(ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8, 8, 0 }, false, false, ComponentColorModel.OPAQUE, DataBuffer.TYPE_BYTE);
+		private static final ColorModel GL_SRGBA_MODEL = new ComponentColorModel(
+				ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8, 8, 8 }, true, false,
+				ComponentColorModel.TRANSLUCENT, DataBuffer.TYPE_BYTE);
+		private static final ColorModel GL_SRGB_MODEL = new ComponentColorModel(
+				ColorSpace.getInstance(ColorSpace.CS_sRGB), new int[] { 8, 8, 8, 0 }, false, false,
+				ComponentColorModel.OPAQUE, DataBuffer.TYPE_BYTE);
 
 		private int width;
 		private int height;

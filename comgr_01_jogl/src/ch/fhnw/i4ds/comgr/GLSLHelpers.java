@@ -5,7 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
-import javax.media.opengl.GL3;
+import com.jogamp.opengl.GL3;
 
 public class GLSLHelpers {
 	public static int createShader(GL3 gl3, Class<?> cls, int shaderType,
