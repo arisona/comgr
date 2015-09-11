@@ -112,7 +112,7 @@ public class RingTextured extends GLCanvas implements GLEventListener {
 			gl3.glBindVertexArray(0);
 
 			// ---- setup texture
-			TextureBuffer tb = new TextureBuffer(getClass().getResource("assets/philae.png"), true);
+			TextureBuffer tb = new TextureBuffer(getClass().getResource("assets/pluto.jpg"), true);
 
 			gl3.glGenTextures(1, texture, 0);
 			gl3.glBindTexture(GL3.GL_TEXTURE_2D, texture[0]);

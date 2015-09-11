@@ -1,4 +1,4 @@
-package cg_01_bresenham;
+package ch.fhnw.i4ds.comgr;
 
 import java.awt.Canvas;
 import java.awt.Frame;
@@ -113,7 +113,7 @@ public class Bresenham extends WindowAdapter {
 	}
 
 	public static void main(String[] args) {
-		Frame f = new Frame("Brseneham");
+		Frame f = new Frame("Bresenham");
 		final FrameBuffer fb = new FrameBuffer();
 		f.add(fb);
 		f.setSize(800, 800);
