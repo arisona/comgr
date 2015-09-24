@@ -1,9 +1,10 @@
 package ch.fhnw.i4ds.comgr;
 
-import java.awt.Frame;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JFrame;
 
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -27,7 +28,8 @@ public class Ring extends GLCanvas implements GLEventListener {
 
 	public static void main(String[] args) {
 		Ring triangle = new Ring();
-		Frame frame = new Frame("Comgr Ring");
+		JFrame frame = new JFrame("Comgr Ring");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(triangle);
 		frame.setSize(triangle.getWidth(), triangle.getHeight());
 		frame.setVisible(true);

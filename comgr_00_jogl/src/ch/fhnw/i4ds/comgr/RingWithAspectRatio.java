@@ -1,9 +1,10 @@
 package ch.fhnw.i4ds.comgr;
 
-import java.awt.Frame;
 import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.swing.JFrame;
 
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -30,7 +31,8 @@ public class RingWithAspectRatio extends GLCanvas implements GLEventListener {
 
 	public static void main(String[] args) {
 		RingWithAspectRatio triangle = new RingWithAspectRatio();
-		Frame frame = new Frame("Comgr Ring with Aspect Ratio");
+		JFrame frame = new JFrame("Comgr Ring with Aspect Ratio");
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.add(triangle);
 		frame.setSize(triangle.getWidth(), triangle.getHeight());
 		frame.setVisible(true);
