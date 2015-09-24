@@ -48,7 +48,7 @@ public class RingTextured extends GLCanvas implements GLEventListener {
 	}
 
 	public RingTextured() {
-		super(new GLCapabilities(GLProfile.get("GL3")));
+		super(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
 		setSize(800, 800);
 		addGLEventListener(this);
 	}

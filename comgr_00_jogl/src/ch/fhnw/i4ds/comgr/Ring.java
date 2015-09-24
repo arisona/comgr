@@ -36,7 +36,7 @@ public class Ring extends GLCanvas implements GLEventListener {
 	}
 
 	public Ring() {
-		super(new GLCapabilities(GLProfile.get("GL3")));
+		super(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
 		setSize(800, 800);
 		addGLEventListener(this);
 	}
