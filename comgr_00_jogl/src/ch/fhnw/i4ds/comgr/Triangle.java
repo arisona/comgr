@@ -87,7 +87,7 @@ public class Triangle extends GLCanvas implements GLEventListener {
 		gl3.glBindVertexArray(VAO[0]);
 		gl3.glDrawArrays(GL3.GL_TRIANGLES, 0, 3);
 		gl3.glBindVertexArray(0);
-		
+
 		gl3.glUseProgram(0);
 	}
 
