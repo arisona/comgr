@@ -36,10 +36,11 @@ public class RingNewt implements GLEventListener, KeyListener {
 		window = GLWindow.create(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
 		window.setSize(800, 800);
 		window.addGLEventListener(this);
+		window.addKeyListener(this);
 		window.setVisible(true);
 		
-		Animator animator = new Animator(window);
-		animator.start();
+		//Animator animator = new Animator(window);
+		//animator.start();
 	}
 
 	@Override
@@ -113,7 +114,7 @@ public class RingNewt implements GLEventListener, KeyListener {
 
 	@Override
 	public void reshape(GLAutoDrawable glad, int x, int y, int w, int h) {
-		glad.getGL().getGL3().glViewport(x, y, w, h);
+		//glad.getGL().getGL3().glViewport(x, y, w, h);
 	}
 	
 	@Override
