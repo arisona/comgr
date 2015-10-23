@@ -4,18 +4,18 @@ import java.nio.FloatBuffer;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.JFrame;
-
+import com.jogamp.newt.event.KeyEvent;
+import com.jogamp.newt.event.KeyListener;
+import com.jogamp.newt.opengl.GLWindow;
 import com.jogamp.opengl.GL3;
 import com.jogamp.opengl.GLAutoDrawable;
 import com.jogamp.opengl.GLCapabilities;
 import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
-import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.util.Animator;
 import com.jogamp.opengl.util.GLBuffers;
 
-public class Ring extends GLCanvas implements GLEventListener {
-	private static final long serialVersionUID = -8933329638658421749L;
+public class RingNewt implements GLEventListener, KeyListener {
 
 	private static final int N = 40;
 	private static final double R0 = 0.5;
@@ -25,20 +25,21 @@ public class Ring extends GLCanvas implements GLEventListener {
 	private final List<Integer> shaders = new ArrayList<>();
 	private final int[] VBO = new int[1];
 	private final int[] VAO = new int[1];
+	
+	private final GLWindow window;
 
 	public static void main(String[] args) {
-		Ring ring = new Ring();
-		JFrame frame = new JFrame("Comgr Ring");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(ring);
-		frame.setSize(ring.getWidth(), ring.getHeight());
-		frame.setVisible(true);
+		new RingNewt();
 	}
 
-	public Ring() {
-		super(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
-		setSize(800, 800);
-		addGLEventListener(this);
+	public RingNewt() {
+		window = GLWindow.create(new GLCapabilities(GLProfile.get(GLProfile.GL3)));
+		window.setSize(800, 800);
+		window.addGLEventListener(this);
+		window.setVisible(true);
+		
+		Animator animator = new Animator(window);
+		animator.start();
 	}
 
 	@Override
@@ -95,6 +96,7 @@ public class Ring extends GLCanvas implements GLEventListener {
 
 	@Override
 	public void display(GLAutoDrawable glad) {
+		System.out.println(Thread.currentThread());
 		GL3 gl3 = glad.getGL().getGL3();
 
 		gl3.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -112,6 +114,15 @@ public class Ring extends GLCanvas implements GLEventListener {
 	@Override
 	public void reshape(GLAutoDrawable glad, int x, int y, int w, int h) {
 		glad.getGL().getGL3().glViewport(x, y, w, h);
+	}
+	
+	@Override
+	public void keyPressed(KeyEvent e) {
+		System.exit(1);
+	}
+	
+	@Override
+	public void keyReleased(KeyEvent e) {
 	}
 
 	private static void add(FloatBuffer buffer, double r, double a) {

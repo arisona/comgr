@@ -30,11 +30,11 @@ public class RingWithAspectRatio extends GLCanvas implements GLEventListener {
 	private float aspect = 1;
 
 	public static void main(String[] args) {
-		RingWithAspectRatio triangle = new RingWithAspectRatio();
+		RingWithAspectRatio ring = new RingWithAspectRatio();
 		JFrame frame = new JFrame("Comgr Ring with Aspect Ratio");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(triangle);
-		frame.setSize(triangle.getWidth(), triangle.getHeight());
+		frame.add(ring);
+		frame.setSize(ring.getWidth(), ring.getHeight());
 		frame.setVisible(true);
 	}
 
