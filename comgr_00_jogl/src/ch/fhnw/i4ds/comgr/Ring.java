@@ -27,11 +27,11 @@ public class Ring extends GLCanvas implements GLEventListener {
 	private final int[] VAO = new int[1];
 
 	public static void main(String[] args) {
-		Ring triangle = new Ring();
+		Ring ring = new Ring();
 		JFrame frame = new JFrame("Comgr Ring");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(triangle);
-		frame.setSize(triangle.getWidth(), triangle.getHeight());
+		frame.add(ring);
+		frame.setSize(ring.getWidth(), ring.getHeight());
 		frame.setVisible(true);
 	}
 

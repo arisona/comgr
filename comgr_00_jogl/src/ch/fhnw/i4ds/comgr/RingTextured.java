@@ -39,11 +39,11 @@ public class RingTextured extends GLCanvas implements GLEventListener {
 	private final int[] texture = new int[1];
 
 	public static void main(String[] args) {
-		RingTextured triangle = new RingTextured();
+		RingTextured ring = new RingTextured();
 		JFrame frame = new JFrame("Comgr Ring Textured");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.add(triangle);
-		frame.setSize(triangle.getWidth(), triangle.getHeight());
+		frame.add(ring);
+		frame.setSize(ring.getWidth(), ring.getHeight());
 		frame.setVisible(true);
 	}
 

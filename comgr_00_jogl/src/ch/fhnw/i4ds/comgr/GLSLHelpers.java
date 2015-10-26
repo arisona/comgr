@@ -8,10 +8,8 @@ import java.util.List;
 import com.jogamp.opengl.GL3;
 
 public class GLSLHelpers {
-	public static int createShader(GL3 gl3, Class<?> cls, int shaderType,
-			String filename) throws IOException {
-		BufferedReader in = new BufferedReader(new InputStreamReader(
-				cls.getResourceAsStream(filename + ".glsl")));
+	public static int createShader(GL3 gl3, Class<?> cls, int shaderType, String filename) throws IOException {
+		BufferedReader in = new BufferedReader(new InputStreamReader(cls.getResourceAsStream(filename + ".glsl")));
 		String content = "";
 		String line;
 		while ((line = in.readLine()) != null)
@@ -20,8 +18,7 @@ public class GLSLHelpers {
 
 		int shader = gl3.glCreateShader(shaderType);
 
-		gl3.glShaderSource(shader, 1, new String[] { content },
-				new int[] { content.length() }, 0);
+		gl3.glShaderSource(shader, 1, new String[] { content }, new int[] { content.length() }, 0);
 		gl3.glCompileShader(shader);
 
 		checkStatus(gl3, shader, GL3.GL_COMPILE_STATUS);
