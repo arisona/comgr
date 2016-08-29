@@ -27,6 +27,7 @@ public class RingNewt implements GLEventListener, KeyListener {
 	private final int[] VAO = new int[1];
 	
 	private final GLWindow window;
+	private final Animator anim;
 
 	public static void main(String[] args) {
 		new RingNewt();
@@ -39,8 +40,11 @@ public class RingNewt implements GLEventListener, KeyListener {
 		window.addKeyListener(this);
 		window.setVisible(true);
 		
-		//Animator animator = new Animator(window);
-		//animator.start();
+		anim = new Animator(window);
+		// windows needs the animator that the window stays open. OSX does not, but it flickers with it
+		if(System.getProperty("os.name").toLowerCase().contains("windows")){
+			anim.start();
+		}
 	}
 
 	@Override
@@ -97,7 +101,7 @@ public class RingNewt implements GLEventListener, KeyListener {
 
 	@Override
 	public void display(GLAutoDrawable glad) {
-		System.out.println(Thread.currentThread());
+		//System.out.println(Thread.currentThread());
 		GL3 gl3 = glad.getGL().getGL3();
 
 		gl3.glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -119,7 +123,8 @@ public class RingNewt implements GLEventListener, KeyListener {
 	
 	@Override
 	public void keyPressed(KeyEvent e) {
-		System.exit(1);
+		anim.stop();
+		System.exit(0);
 	}
 	
 	@Override
