@@ -1,18 +1,17 @@
 package ch.fhnw.i4ds.comgr;
 
-import org.lwjgl.Sys;
+import org.lwjgl.Version;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWvidmode;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
 public class HelloLWJGL {
 	private GLFWErrorCallback errorCallback;
-	private GLFWKeyCallback keyCallback;
 
 	private long window;
 
@@ -21,22 +20,20 @@ public class HelloLWJGL {
 	}
 
 	private void run() {
-		System.out.println("Hello LWJGL " + Sys.getVersion() + "!");
+		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
 		try {
-			GLFW.glfwSetErrorCallback(errorCallback = Callbacks.errorCallbackPrint(System.err));
-
-			if (GLFW.glfwInit() != GL11.GL_TRUE)
+			GLFW.glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
+			if (!GLFW.glfwInit())
 				throw new IllegalStateException("Unable to initialize GLFW");
 
 			init();
 			loop();
 
-			GLFW.glfwDestroyWindow(window);
-			keyCallback.release();
+			Callbacks.glfwFreeCallbacks(window);
 		} finally {
 			GLFW.glfwTerminate();
-			errorCallback.release();
+			errorCallback.free();
 		}
 	}
 
@@ -52,16 +49,16 @@ public class HelloLWJGL {
 		if (window == MemoryUtil.NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
 
-		GLFW.glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+		GLFW.glfwSetKeyCallback(window, new GLFWKeyCallback() {
 			@Override
 			public void invoke(long window, int key, int scancode, int action, int mods) {
 				if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE)
-					GLFW.glfwSetWindowShouldClose(window, GL11.GL_TRUE);
+					GLFW.glfwSetWindowShouldClose(window, true);
 			}
 		});
 
-		GLFWvidmode vidmode = new GLFWvidmode(GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor()));
-		GLFW.glfwSetWindowPos(window, (vidmode.getWidth() - width) / 2, (vidmode.getHeight() - height) / 2);
+		GLFWVidMode vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+		GLFW.glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
 
 		GLFW.glfwMakeContextCurrent(window);
 		GLFW.glfwSwapInterval(1);
@@ -80,7 +77,7 @@ public class HelloLWJGL {
 
 		GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 
-		while (GLFW.glfwWindowShouldClose(window) == GL11.GL_FALSE) {
+		while (!GLFW.glfwWindowShouldClose(window)) {
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 			GLFW.glfwSwapBuffers(window);

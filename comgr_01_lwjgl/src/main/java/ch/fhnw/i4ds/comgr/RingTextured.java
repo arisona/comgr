@@ -5,13 +5,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.BufferUtils;
-import org.lwjgl.Sys;
+import org.lwjgl.Version;
 import org.lwjgl.glfw.Callbacks;
 import org.lwjgl.glfw.GLFW;
 import org.lwjgl.glfw.GLFWErrorCallback;
 import org.lwjgl.glfw.GLFWFramebufferSizeCallback;
 import org.lwjgl.glfw.GLFWKeyCallback;
-import org.lwjgl.glfw.GLFWvidmode;
+import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL13;
@@ -27,8 +27,6 @@ public class RingTextured {
 	private static final double R1 = 0.7;
 
 	private GLFWErrorCallback errorCallback;
-	private GLFWKeyCallback keyCallback;
-	private GLFWFramebufferSizeCallback sizeCallback;
 
 	private long window;
 
@@ -53,12 +51,11 @@ public class RingTextured {
 	}
 
 	private void run() {
-		System.out.println("Texture Ring - LWJGL " + Sys.getVersion());
+		System.out.println("Texture Ring - LWJGL " + Version.getVersion());
 
 		try {
-			GLFW.glfwSetErrorCallback(errorCallback = Callbacks.errorCallbackPrint(System.err));
-
-			if (GLFW.glfwInit() != GL11.GL_TRUE)
+			GLFW.glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
+			if (!GLFW.glfwInit())
 				throw new IllegalStateException("Unable to initialize GLFW");
 
 			initWindow();
@@ -66,12 +63,10 @@ public class RingTextured {
 			loop();
 			destroyScene();
 
-			GLFW.glfwDestroyWindow(window);
-			keyCallback.release();
-			sizeCallback.release();
+			Callbacks.glfwFreeCallbacks(window);
 		} finally {
 			GLFW.glfwTerminate();
-			errorCallback.release();
+			errorCallback.free();
 		}
 		
 	}
@@ -92,23 +87,23 @@ public class RingTextured {
 		if (window == MemoryUtil.NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
 
-		GLFW.glfwSetKeyCallback(window, keyCallback = new GLFWKeyCallback() {
+		GLFW.glfwSetKeyCallback(window, new GLFWKeyCallback() {
 			@Override
 			public void invoke(long window, int key, int scancode, int action, int mods) {
 				if (key == GLFW.GLFW_KEY_ESCAPE && action == GLFW.GLFW_RELEASE)
-					GLFW.glfwSetWindowShouldClose(window, GL11.GL_TRUE);
+					GLFW.glfwSetWindowShouldClose(window, true);
 			}
 		});
 		
-		GLFW.glfwSetFramebufferSizeCallback(window, sizeCallback = new GLFWFramebufferSizeCallback() {		
+		GLFW.glfwSetFramebufferSizeCallback(window, new GLFWFramebufferSizeCallback() {		
 			@Override
 			public void invoke(long window, int width, int height) {
 				reshape(width, height);
 			}
 		});
 
-		GLFWvidmode vidmode = new GLFWvidmode(GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor()));
-		GLFW.glfwSetWindowPos(window, (vidmode.getWidth() - width) / 2, (vidmode.getHeight() - height) / 2);
+		GLFWVidMode vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+		GLFW.glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
 
 		GLFW.glfwMakeContextCurrent(window);
 		GLFW.glfwSwapInterval(1);
@@ -225,7 +220,7 @@ public class RingTextured {
 	private void loop() {
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
-		while (GLFW.glfwWindowShouldClose(window) == GL11.GL_FALSE) {
+		while (GLFW.glfwWindowShouldClose(window) == false) {
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 			GL20.glUseProgram(program);
