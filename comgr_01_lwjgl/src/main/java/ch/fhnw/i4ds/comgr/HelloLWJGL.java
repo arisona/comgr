@@ -11,8 +11,6 @@ import org.lwjgl.opengl.GL11;
 import org.lwjgl.system.MemoryUtil;
 
 public class HelloLWJGL {
-	private GLFWErrorCallback errorCallback;
-
 	private long window;
 
 	public static void main(String[] args) {
@@ -22,8 +20,8 @@ public class HelloLWJGL {
 	private void run() {
 		System.out.println("Hello LWJGL " + Version.getVersion() + "!");
 
-		try {
-			GLFW.glfwSetErrorCallback(errorCallback = GLFWErrorCallback.createPrint(System.err));
+		try (GLFWErrorCallback errorCallback = GLFWErrorCallback.createPrint(System.err)) {
+			GLFW.glfwSetErrorCallback(errorCallback);
 			if (!GLFW.glfwInit())
 				throw new IllegalStateException("Unable to initialize GLFW");
 
@@ -33,7 +31,6 @@ public class HelloLWJGL {
 			Callbacks.glfwFreeCallbacks(window);
 		} finally {
 			GLFW.glfwTerminate();
-			errorCallback.free();
 		}
 	}
 
@@ -74,7 +71,6 @@ public class HelloLWJGL {
 	}
 
 	private void loop() {
-
 		GL11.glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
 
 		while (!GLFW.glfwWindowShouldClose(window)) {
