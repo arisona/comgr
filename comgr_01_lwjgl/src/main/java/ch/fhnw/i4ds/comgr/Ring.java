@@ -14,7 +14,6 @@ import org.lwjgl.glfw.GLFWKeyCallback;
 import org.lwjgl.glfw.GLFWVidMode;
 import org.lwjgl.opengl.GL;
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL13;
 import org.lwjgl.opengl.GL15;
 import org.lwjgl.opengl.GL20;
 import org.lwjgl.opengl.GL30;
@@ -22,7 +21,7 @@ import org.lwjgl.system.MemoryUtil;
 
 public class Ring {
 
-	private static final int N = 40;
+	private static final int N = 100;
 	private static final double R0 = 0.5;
 	private static final double R1 = 0.7;
 
@@ -33,23 +32,20 @@ public class Ring {
 
 	private int vao;
 	private int vboPosition;
-	private int vboTexCoord;
+	private int vboColor;
 
 	private int positionAttribLocation;
-	private int texCoordAttribLocation;
+	private int colorAttribLocation;
 
 	private int aspectUniformLocation;
 	private float aspect = 1;
-
-	private int textureUniformLocation;
-	private int texture;
 
 	public static void main(String[] args) {
 		new Ring().run();
 	}
 
 	private void run() {
-		System.out.println("Texture Ring - LWJGL " + Version.getVersion());
+		System.out.println("Ring - LWJGL " + Version.getVersion());
 
 		try (GLFWErrorCallback errorCallback = GLFWErrorCallback.createPrint(System.err)) {
 			GLFW.glfwSetErrorCallback(errorCallback);
@@ -80,7 +76,7 @@ public class Ring {
 		int width = 300;
 		int height = 300;
 
-		window = GLFW.glfwCreateWindow(width, height, "Hello World!", MemoryUtil.NULL, MemoryUtil.NULL);
+		window = GLFW.glfwCreateWindow(width, height, "Hello OpenGL", MemoryUtil.NULL, MemoryUtil.NULL);
 		if (window == MemoryUtil.NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
 
@@ -122,19 +118,18 @@ public class Ring {
 			GL30.glBindVertexArray(vao);
 
 			// ---- setup glsl program and uniforms
-			shaders.add(GLSLHelpers.createShader(getClass(), GL20.GL_VERTEX_SHADER, "glsl/textured_vs"));
-			shaders.add(GLSLHelpers.createShader(getClass(), GL20.GL_FRAGMENT_SHADER, "glsl/textured_fs"));
+			shaders.add(GLSLHelpers.createShader(getClass(), GL20.GL_VERTEX_SHADER, "glsl/colored_vs"));
+			shaders.add(GLSLHelpers.createShader(getClass(), GL20.GL_FRAGMENT_SHADER, "glsl/colored_fs"));
 			program = GLSLHelpers.createProgram(shaders);
 
 			positionAttribLocation = GL20.glGetAttribLocation(program, "position");
-			texCoordAttribLocation = GL20.glGetAttribLocation(program, "texCoord");
+			colorAttribLocation = GL20.glGetAttribLocation(program, "color");
 
 			aspectUniformLocation = GL20.glGetUniformLocation(program, "aspect");
-			textureUniformLocation = GL20.glGetUniformLocation(program, "colorMap");
 
 			// ---- setup vertex buffers (two buffers, non-interleaved)
 			FloatBuffer positionBuffer = BufferUtils.createFloatBuffer(N * 12);
-			FloatBuffer texCoordBuffer = BufferUtils.createFloatBuffer(N * 12);
+			FloatBuffer colorBuffer = BufferUtils.createFloatBuffer(N * 24);
 
 			for (int i = 0; i < N; i++) {
 				double a = (i * Math.PI * 2) / N;
@@ -142,21 +137,21 @@ public class Ring {
 
 				addPosition(positionBuffer, R0, a);
 				addPosition(positionBuffer, R0, b);
-				addTexCoord(texCoordBuffer, R0, a);
-				addTexCoord(texCoordBuffer, R0, b);
+				addColor(colorBuffer, R0, a);
+				addColor(colorBuffer, R0, b);
 
 				addPosition(positionBuffer, R1, a);
 				addPosition(positionBuffer, R0, b);
-				addTexCoord(texCoordBuffer, R1, a);
-				addTexCoord(texCoordBuffer, R0, b);
+				addColor(colorBuffer, R1, a);
+				addColor(colorBuffer, R0, b);
 
 				addPosition(positionBuffer, R1, b);
 				addPosition(positionBuffer, R1, a);
-				addTexCoord(texCoordBuffer, R1, b);
-				addTexCoord(texCoordBuffer, R1, a);
+				addColor(colorBuffer, R1, b);
+				addColor(colorBuffer, R1, a);
 			}
 			positionBuffer.rewind();
-			texCoordBuffer.rewind();
+			colorBuffer.rewind();
 
 			vboPosition = GL15.glGenBuffers();
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboPosition);
@@ -164,38 +159,14 @@ public class Ring {
 			GL20.glVertexAttribPointer(positionAttribLocation, 2, GL11.GL_FLOAT, false, 0, 0);
 			GL20.glEnableVertexAttribArray(positionAttribLocation);
 
-			vboTexCoord = GL15.glGenBuffers();
-			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboTexCoord);
-			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, texCoordBuffer, GL15.GL_STATIC_DRAW);
-			GL20.glVertexAttribPointer(texCoordAttribLocation, 2, GL11.GL_FLOAT, false, 0, 0);
-			GL20.glEnableVertexAttribArray(texCoordAttribLocation);
+			vboColor = GL15.glGenBuffers();
+			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboColor);
+			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, colorBuffer, GL15.GL_STATIC_DRAW);
+			GL20.glVertexAttribPointer(colorAttribLocation, 2, GL11.GL_FLOAT, false, 0, 0);
+			GL20.glEnableVertexAttribArray(colorAttribLocation);
 
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
 
-			// ---- setup texture
-			// TextureBuffer tb = new
-			// TextureBuffer(getClass().getResource("assets/pluto.jpg"), true);
-			//
-			// texture = GL11.glGenTextures();
-			// GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-			// GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-			// GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-			// GL11.glTexParameteri(GL11.GL_TEXTURE_2D,
-			// GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
-			// GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_S,
-			// GL11.GL_REPEAT);
-			// GL11.glTexParameterf(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_WRAP_T,
-			// GL11.GL_REPEAT);
-			//
-			// GL11.glPixelStorei(GL11.GL_UNPACK_ALIGNMENT, 1);
-			// tb.getBuffer().rewind();
-			// GL11.glTexImage2D(GL11.GL_TEXTURE_2D, 0, GL11.GL_RGBA,
-			// tb.getWidth(), tb.getHeight(), 0, tb.getFormat(),
-			// GL11.GL_UNSIGNED_BYTE, tb.getBuffer());
-			// GL30.glGenerateMipmap(GL11.GL_TEXTURE_2D);
-			// GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);			
-
-			
 			GL30.glBindVertexArray(0);
 		} catch (Throwable t) {
 			t.printStackTrace();
@@ -205,7 +176,7 @@ public class Ring {
 	
 	private void destroyScene() {
 		GL15.glDeleteBuffers(vboPosition);
-		GL15.glDeleteBuffers(vboTexCoord);
+		GL15.glDeleteBuffers(vboColor);
 
 		for (int shader : shaders)
 			GL20.glDeleteShader(shader);
@@ -223,19 +194,11 @@ public class Ring {
 
 			GL20.glUniform1f(aspectUniformLocation, aspect);
 
-			GL13.glActiveTexture(GL13.GL_TEXTURE0 + 0);
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, texture);
-			GL20.glUniform1i(textureUniformLocation, 0);
-
 			GL30.glBindVertexArray(vao);
 			GL11.glDrawArrays(GL11.GL_TRIANGLES, 0, N * 6);
 			GL30.glBindVertexArray(0);
 
-			GL11.glBindTexture(GL11.GL_TEXTURE_2D, 0);
-			GL13.glActiveTexture(GL13.GL_TEXTURE0);
-
 			GL20.glUseProgram(0);
-
 			
 			GLFW.glfwSwapBuffers(window);
 
@@ -254,7 +217,9 @@ public class Ring {
 		buffer.put((float) (r * Math.cos(a)));
 	}
 
-	private static void addTexCoord(FloatBuffer buffer, double r, double a) {
+	private static void addColor(FloatBuffer buffer, double r, double a) {
+		buffer.put((float) (0.5 + 0.5 * r * Math.sin(a)));
+		buffer.put((float) (0.5 + 0.5 * r * Math.cos(a)));
 		buffer.put((float) (0.5 + 0.5 * r * Math.sin(a)));
 		buffer.put((float) (0.5 + 0.5 * r * Math.cos(a)));
 	}

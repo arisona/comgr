@@ -18,8 +18,6 @@ public class GLSLHelpers {
 
 		int shader = GL20.glCreateShader(shaderType);
 
-		
-		
 		GL20.glShaderSource(shader, content);
 		GL20.glCompileShader(shader);
 
@@ -51,12 +49,12 @@ public class GLSLHelpers {
 			status = GL20.glGetProgrami(object, statusType);
 
 		if (status != 1) {
-			System.err.println("status: " + status);
+			System.err.println((statusType == GL20.GL_COMPILE_STATUS ? "compile" : "link") + " status: " + status);
 			status = GL20.glGetShaderi(object, GL20.GL_INFO_LOG_LENGTH);
 			String infoLog = "";
 			if (statusType == GL20.GL_COMPILE_STATUS)
 				infoLog = GL20.glGetShaderInfoLog(object);
-			//else if (statusType == GL20.GL_LINK_STATUS)
+			else if (statusType == GL20.GL_LINK_STATUS)
 				infoLog = GL20.glGetProgramInfoLog(object);
 			System.err.println(infoLog);
 			System.exit(-1);
