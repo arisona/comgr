@@ -42,7 +42,7 @@ public class HelloLWJGL {
 		int width = 300;
 		int height = 300;
 
-		window = GLFW.glfwCreateWindow(width, height, "Hello World!", MemoryUtil.NULL, MemoryUtil.NULL);
+		window = GLFW.glfwCreateWindow(width, height, "Hello LWJGL", MemoryUtil.NULL, MemoryUtil.NULL);
 		if (window == MemoryUtil.NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
 

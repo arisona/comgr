@@ -76,7 +76,7 @@ public class Ring {
 		int width = 300;
 		int height = 300;
 
-		window = GLFW.glfwCreateWindow(width, height, "Hello OpenGL", MemoryUtil.NULL, MemoryUtil.NULL);
+		window = GLFW.glfwCreateWindow(width, height, "OpenGL Ring", MemoryUtil.NULL, MemoryUtil.NULL);
 		if (window == MemoryUtil.NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
 
