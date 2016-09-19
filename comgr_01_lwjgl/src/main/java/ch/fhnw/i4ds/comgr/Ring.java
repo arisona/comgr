@@ -38,6 +38,8 @@ public class Ring {
 	private int colorAttribLocation;
 
 	private int aspectUniformLocation;
+	private int width;
+	private int height;
 	private float aspect = 1;
 
 	public static void main(String[] args) {
@@ -76,7 +78,7 @@ public class Ring {
 		int width = 300;
 		int height = 300;
 
-		window = GLFW.glfwCreateWindow(width, height, "OpenGL Ring", MemoryUtil.NULL, MemoryUtil.NULL);
+		window = GLFW.glfwCreateWindow(16, 16, "OpenGL Ring", MemoryUtil.NULL, MemoryUtil.NULL);
 		if (window == MemoryUtil.NULL)
 			throw new RuntimeException("Failed to create the GLFW window");
 
@@ -96,6 +98,7 @@ public class Ring {
 		});
 
 		GLFWVidMode vidmode = GLFW.glfwGetVideoMode(GLFW.glfwGetPrimaryMonitor());
+		GLFW.glfwSetWindowSize(window, width, height);
 		GLFW.glfwSetWindowPos(window, (vidmode.width() - width) / 2, (vidmode.height() - height) / 2);
 
 		GLFW.glfwMakeContextCurrent(window);
@@ -188,6 +191,8 @@ public class Ring {
 		GL11.glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
 		while (GLFW.glfwWindowShouldClose(window) == false) {
+			GL11.glViewport(0, 0, width, height);
+			
 			GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 
 			GL20.glUseProgram(program);
@@ -209,6 +214,8 @@ public class Ring {
 	}
 
 	public void reshape(int w, int h) {
+		width = w;
+		height = h;
 		aspect = (float) w / (float) h;
 	}
 
