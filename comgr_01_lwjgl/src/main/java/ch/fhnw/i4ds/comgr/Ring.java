@@ -121,8 +121,8 @@ public class Ring {
 			GL30.glBindVertexArray(vao);
 
 			// ---- setup glsl program and uniforms
-			shaders.add(GLSLHelpers.createShader(getClass(), GL20.GL_VERTEX_SHADER, "glsl/colored_vs"));
-			shaders.add(GLSLHelpers.createShader(getClass(), GL20.GL_FRAGMENT_SHADER, "glsl/colored_fs"));
+			shaders.add(GLSLHelpers.createShader(getClass(), GL20.GL_VERTEX_SHADER, "/shaders/colored_vs"));
+			shaders.add(GLSLHelpers.createShader(getClass(), GL20.GL_FRAGMENT_SHADER, "/shaders/colored_fs"));
 			program = GLSLHelpers.createProgram(shaders);
 
 			positionAttribLocation = GL20.glGetAttribLocation(program, "position");
