@@ -165,7 +165,7 @@ public class Ring {
 			vboColor = GL15.glGenBuffers();
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, vboColor);
 			GL15.glBufferData(GL15.GL_ARRAY_BUFFER, colorBuffer, GL15.GL_STATIC_DRAW);
-			GL20.glVertexAttribPointer(colorAttribLocation, 2, GL11.GL_FLOAT, false, 0, 0);
+			GL20.glVertexAttribPointer(colorAttribLocation, 4, GL11.GL_FLOAT, false, 0, 0);
 			GL20.glEnableVertexAttribArray(colorAttribLocation);
 
 			GL15.glBindBuffer(GL15.GL_ARRAY_BUFFER, 0);
