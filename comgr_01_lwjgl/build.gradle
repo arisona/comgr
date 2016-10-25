@@ -20,7 +20,7 @@ public String getLwjglArch(String platform) {
 
 ext {
   //lwjglVersion = "3.0.0b"
-  lwjglVersion = "3.0.1-SNAPSHOT"
+  lwjglVersion = "3.1.0-SNAPSHOT"
   lwjglArch = getLwjglArch(System.properties['os.name'])
 }
 
